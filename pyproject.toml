@@ -1,0 +1,68 @@
+[project]
+name = "fluss-monty"
+dynamic = ["version"]
+readme = "README.md"
+description = "Check and run flows written as Python source in a Monty sandbox: the core fluss and its server share"
+authors = [{ name = "jhnnsrs", email = "jhnnsrs@gmail.com" }]
+requires-python = ">=3.11, <4.0"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+dependencies = [
+    "pydantic>=2.7",
+    "pydantic-monty>=1,<2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "python-semantic-release>=9.21.0",
+    "ruff>=0.0.254",
+    "basedpyright>=1.21",
+]
+
+[tool.basedpyright]
+include = ["fluss_monty"]
+typeCheckingMode = "standard"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+extend-select = ["ANN", "D1"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN", "D1"]
+
+[tool.hatch.build.targets.sdist]
+include = ["fluss_monty"]
+
+[tool.hatch.build.targets.wheel]
+include = ["fluss_monty"]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+# The version is derived from the nearest git tag (vX.Y.Z); nothing in the
+# tree is bumped on release. Shallow CI clones see no tag and get the fallback.
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.semantic_release]
+# Tag-only, as in fluss: the version lives in the git tag, which hatch-vcs reads at build
+# time. The action's container has no uv, so it is installed first.
+build_command = """
+    python -m pip install 'uv>=0.7.12'
+    export SETUPTOOLS_SCM_PRETEND_VERSION="$NEW_VERSION"
+    uv build
+"""
+
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
