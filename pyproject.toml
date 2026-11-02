@@ -29,7 +29,8 @@ typeCheckingMode = "standard"
 line-length = 100
 
 [tool.ruff.lint]
-extend-select = ["ANN", "D1"]
+extend-select = ["ANN", "D1", "UP"]
+extend-ignore = ["UP037", "UP038", "UP042"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["ANN", "D1"]
